@@ -1,7 +1,5 @@
 ---
-title: "Tamas Gabor - Data Science"
+title: "Intelligence from Data by Algorithms"
 ---
 
-This is a Quarto website.
-
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+Welcome to the site dedicated to articles about intelligence constructed from data and algorithms as tools for that.

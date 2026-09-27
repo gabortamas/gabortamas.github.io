@@ -1,0 +1,11 @@
+---
+title: "Where those smart-looking tree algorithms came from"
+subtitle: "Decision Trees, Part 1"
+author: "Tamas Gabor"
+date: 2026-09-26
+categories: [decision trees, history]
+---
+
+By the time four statisticians published the seminal book *Classification and Regression Trees* in 1984, statisticians had already experimented with algorithms that graphically presented looked like triangle-shaped Christmas trees.
+
+While the Decision Trees series focus primarily on the methodological framework covered in the aforementioned book - and eventually on the currently used modern tree-based algorithms we use today, it is worth taking few steps back to the early history of the tree-based methods and how it all began.
