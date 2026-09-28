@@ -21,15 +21,18 @@ website:
       - text: "Causal Inference"
         href: articles/causal-inference/index.qmd
       - text: "Generative AI"
-        href: articles/gen-ai/index.qmd
+        href: articles/gen-ai-and-agentic-workflow/index.qmd
 
 format:
   html:
     theme:
-      light: [cosmo, brand]
+      light: [cosmo, brand, light.scss]
       dark: cyborg
+    grid:
+      margin-width: 600px
     respect-user-color-scheme: true
     css: styles.css
+    lang: en
     toc: true
     mainfont: "New Computer Modern"
 
