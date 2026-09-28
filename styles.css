@@ -1,7 +1,7 @@
 /* css styles */
 @font-face {
   font-family: "New Computer Modern";
-  src: url("fonts/NewCM10-Regular.otf") format("opentype");
+  src: url("fonts/NewCM10-Book.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
 }
@@ -22,4 +22,16 @@
   src: url("fonts/NewCM10-BoldItalic.otf") format("opentype");
   font-weight: bold;
   font-style: italic;
+}
+
+main p,
+main li {
+  text-align: justify;
+  hyphens: auto;
+}
+
+h1, h2, h3, h4, h5, h6,
+.title, .subtitle {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
 }
