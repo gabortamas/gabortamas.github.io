@@ -7,11 +7,15 @@
     "text": "Welcome to the site dedicated to articles about intelligence constructed from data and algorithms as tools for that."
   },
   {
-    "objectID": "articles/decision-trees/01-origins/index.html",
-    "href": "articles/decision-trees/01-origins/index.html",
-    "title": "Where those smart-looking tree algorithms came from",
+    "objectID": "articles/causal-inference/index.html",
+    "href": "articles/causal-inference/index.html",
+    "title": "Series overview",
     "section": "",
-    "text": "By the time four statisticians published the seminal book Classification and Regression Trees in 1984, statisticians had already experimented with algorithms that graphically presented looked like triangle-shaped Christmas trees.\nWhile the Decision Trees series focus primarily on the methodological framework covered in the aforementioned book - and eventually on the currently used modern tree-based algorithms we use today, it is worth taking few steps back to the early history of the tree-based methods and how it all began."
+    "text": "A short introduction to the series goes here.\n\n\n\n\n\n\n\n\nNo matching items",
+    "crumbs": [
+      "Home",
+      "Causal Inference"
+    ]
   },
   {
     "objectID": "about.html",
@@ -21,10 +25,26 @@
     "text": "About this site"
   },
   {
+    "objectID": "articles/decision-trees/01-origins/index.html",
+    "href": "articles/decision-trees/01-origins/index.html",
+    "title": "1. The First Seeds",
+    "section": "",
+    "text": "By the time four statisticians published the seminal book Classification and Regression Trees in 1984, statisticians had already experimented with algorithms that graphically presented looked like triangle-shaped Christmas trees.\nWhile the Decision Trees series focus primarily on the methodological framework covered in the aforementioned book - and eventually on the currently used modern tree-based algorithms we use today, it is worth taking few steps back to the early history of the tree-based methods and how it all began.",
+    "crumbs": [
+      "Home",
+      "Decision Trees",
+      "1. The First Seeds"
+    ]
+  },
+  {
     "objectID": "articles.html",
     "href": "articles.html",
     "title": "Articles",
     "section": "",
-    "text": "Where those smart-looking tree algorithms came from\n\n\nDecision Trees, Part 1\n\n\n\ndecision trees\n\nhistory\n\n\n\n\n\n\n\n\n\nSep 26, 2026\n\n\nTamas Gabor\n\n\n\n\n\nNo matching items"
+    "text": "1. The First Seeds\n\n\nDecision Trees, Part 1\n\n\n\ndecision trees\n\nhistory\n\n\n\n\n\n\n\n\n\nSep 26, 2026\n\n\nTamas Gabor\n\n\n\n\n\nNo matching items",
+    "crumbs": [
+      "Home",
+      "Articles"
+    ]
   }
 ]

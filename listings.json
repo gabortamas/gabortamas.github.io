@@ -1,5 +1,9 @@
 [
   {
+    "listing": "/articles/causal-inference/index.html",
+    "items": []
+  },
+  {
     "listing": "/articles.html",
     "items": [
       "/articles/decision-trees/01-origins/index.html"
