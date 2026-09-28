@@ -1,23 +1,37 @@
 project:
   type: website
+  resources:
+    - fonts/
 
 website:
-  title: "Magical Algorithms"
+  title: "Magical algorithms"
   navbar:
     left:
       - href: index.qmd
         text: Home
       - articles.qmd
       - about.qmd
+  sidebar:
+    style: docked
+    contents:
+      - articles.qmd
+      - section: "Decision Trees"
+        href: articles/decision-trees/index.qmd
+        contents: "articles/decision-trees/*/index.qmd"
+      - text: "Causal Inference"
+        href: articles/causal-inference/index.qmd
+      - text: "Generative AI"
+        href: articles/gen-ai/index.qmd
 
 format:
   html:
     theme:
-      - cosmo
-      - brand
+      light: [cosmo, brand]
+      dark: cyborg
+    respect-user-color-scheme: true
     css: styles.css
     toc: true
+    mainfont: "New Computer Modern"
 
 execute:
   freeze: auto
-

@@ -1,5 +1,6 @@
 ---
 title: "Intelligence from Data by Algorithms"
+sidebar: false
 ---
 
 Welcome to the site dedicated to articles about intelligence constructed from data and algorithms as tools for that.

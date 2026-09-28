@@ -1,0 +1,8 @@
+---
+title: "Series overview"
+listing:
+  contents: "*/index.qmd"
+  sort: "date asc"
+---
+
+A short introduction to the series goes here.

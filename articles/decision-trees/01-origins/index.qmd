@@ -1,5 +1,5 @@
 ---
-title: "Where those smart-looking tree algorithms came from"
+title: "1. The First Seeds"
 subtitle: "Decision Trees, Part 1"
 author: "Tamas Gabor"
 date: 2026-09-26
