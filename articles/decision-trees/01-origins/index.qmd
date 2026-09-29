@@ -6,12 +6,20 @@ date: 2026-09-26
 categories: [decision trees, history]
 ---
 
-By the time four statisticians published the seminal book Classification and Regression Trees in 1984, statisticians had already experimented with algorithms that graphically presented looked like triangle-shaped Christmas trees.
+Decision Trees Series, Part 1
+
+By the time four statisticians published the seminal book *Classification and Regression Trees* in 1984, statisticians had already experimented with algorithms that graphically presented looked like triangle-shaped Christmas trees.
 
 While this series of articles about Decision Trees focuses primarily on the methodological framework covered in the aforementioned book - and eventually on the currently used modern tree-based algorithms we use today, it is worth taking few steps back to the early history of the tree-based methods and how it all began.
 
-**Automatic Interaction Detection (1963)**
+## Automatic Interaction Detection (1963)
 
-Two researchers in the University of Michigan were analyzing US households survey data, and they must have been frustrated by a fundamental limitation of the most commonly used tool of the time: regression, is problematic when the explanatory variables have interactions with each other. They identified additional concerns in their paper, but the issue with interaction effects between the variables was the most striking.
+In the first half of the 1960s, two researchers, James N. Morgan and John A. Sonquist at the University of Michigan spent most of their time analyzing US households survey data. They long had concerns with a fundamental limitation of the most commonly used statistical modelling tool of the time: the multivariate regression. Even though regression was very popular, this statistical modelling tool had multiple well-known limitations, but what bothered these two researchers the most were that the explanatory variables in real life often had intercorrelations and heavy interactions with each other.
+
+In 1963, they subjected a paper (Problems in the Analysis of Survey Data, and a Proposal) into the Journal of the American Statistical Association, that became one of the earliest and most known precedent of proposing ‘seeding’ of decision trees. In the paper, they used survey data to model the households’ savings ability as dependent variable driven by such various explanatory factors, like age, occupation, income, education, race, location of the participants of the households.
+
+### The interaction effects
+
+Without going into the interaction effects of the multi-variate regressions, 
 
 
