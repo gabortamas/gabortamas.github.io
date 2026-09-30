@@ -84,7 +84,7 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="../../../styles.css">
 </head>
 
-<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-sidebar docked nav-fixed slimcontent quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -355,13 +355,14 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#automatic-interaction-detection-1963" id="toc-automatic-interaction-detection-1963" class="nav-link active" data-scroll-target="#automatic-interaction-detection-1963">Automatic Interaction Detection (1963)</a>
   <ul class="collapse">
+  <li><a href="#sample-data" id="toc-sample-data" class="nav-link" data-scroll-target="#sample-data">Sample data</a></li>
   <li><a href="#the-interaction-effects" id="toc-the-interaction-effects" class="nav-link" data-scroll-target="#the-interaction-effects">The interaction effects</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../articles/decision-trees/index.html">Decision Trees</a></li><li class="breadcrumb-item"><a href="../../../articles/decision-trees/01-origins/index.html">1. The First Seeds</a></li></ol></nav>
@@ -400,14 +401,183 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Decision Trees Series, Part 1</p>
 <p>By the time four statisticians published the seminal book <em>Classification and Regression Trees</em> in 1984, statisticians had already experimented with algorithms that graphically presented looked like triangle-shaped Christmas trees.</p>
 <p>While this series of articles about Decision Trees focuses primarily on the methodological framework covered in the aforementioned book - and eventually on the currently used modern tree-based algorithms we use today, it is worth taking few steps back to the early history of the tree-based methods and how it all began.</p>
-<section id="automatic-interaction-detection-1963" class="level2">
+<section id="automatic-interaction-detection-1963" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="automatic-interaction-detection-1963">Automatic Interaction Detection (1963)</h2>
 <p>In the first half of the 1960s, two researchers, James N. Morgan and John A. Sonquist at the University of Michigan spent most of their time analyzing US households survey data. They long had concerns with a fundamental limitation of the most commonly used statistical modelling tool of the time: the multivariate regression. Even though regression was very popular, this statistical modelling tool had multiple well-known limitations, but what bothered these two researchers the most were that the explanatory variables in real life often had intercorrelations and heavy interactions with each other.</p>
 <p>In 1963, they subjected a paper (Problems in the Analysis of Survey Data, and a Proposal) into the Journal of the American Statistical Association, that became one of the earliest and most known precedent of proposing ‘seeding’ of decision trees. In the paper, they used survey data to model the households’ savings ability as dependent variable driven by such various explanatory factors, like age, occupation, income, education, race, location of the participants of the households.</p>
-<section id="the-interaction-effects" class="level3">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>About the sample
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Throughout this article we use a small sample of 20 observations, so every step of the calculation can be followed by hand.</p>
+</div>
+</div>
+
+<div class="no-row-height column-margin column-container"><section id="sample-data" class="level3 small-table">
+<h3 class="anchored" data-anchor-id="sample-data">Sample data</h3>
+<p>Own = owns home (Y/N); Reg = region (C = City, T = Town, V = Village); Sav = savings.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Age</th>
+<th>Own</th>
+<th>Reg</th>
+<th>Sav</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>&lt;35</td>
+<td>Y</td>
+<td>C</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>&lt;35</td>
+<td>Y</td>
+<td>T</td>
+<td>4</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>35–49</td>
+<td>Y</td>
+<td>V</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>35–49</td>
+<td>Y</td>
+<td>C</td>
+<td>5</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>35–49</td>
+<td>Y</td>
+<td>T</td>
+<td>6</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>50–64</td>
+<td>Y</td>
+<td>C</td>
+<td>7</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>50–64</td>
+<td>Y</td>
+<td>V</td>
+<td>8</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>50–64</td>
+<td>Y</td>
+<td>T</td>
+<td>9</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>65+</td>
+<td>Y</td>
+<td>V</td>
+<td>8</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>65+</td>
+<td>Y</td>
+<td>C</td>
+<td>10</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>&lt;35</td>
+<td>N</td>
+<td>C</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td>&lt;35</td>
+<td>N</td>
+<td>C</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>13</td>
+<td>&lt;35</td>
+<td>N</td>
+<td>T</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td>14</td>
+<td>35–49</td>
+<td>N</td>
+<td>V</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td>15</td>
+<td>35–49</td>
+<td>N</td>
+<td>C</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>16</td>
+<td>50–64</td>
+<td>N</td>
+<td>T</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>17</td>
+<td>50–64</td>
+<td>N</td>
+<td>V</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>18</td>
+<td>65+</td>
+<td>N</td>
+<td>V</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>19</td>
+<td>65+</td>
+<td>N</td>
+<td>T</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>20</td>
+<td>65+</td>
+<td>N</td>
+<td>C</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</section></div><section id="the-interaction-effects" class="level3">
 <h3 class="anchored" data-anchor-id="the-interaction-effects">The interaction effects</h3>
 <p>Without going into the interaction effects of the multi-variate regressions,</p>
 
