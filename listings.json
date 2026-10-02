@@ -6,6 +6,7 @@
   {
     "listing": "/articles.html",
     "items": [
+      "/articles/decision-trees/02-c4.5/index.html",
       "/articles/decision-trees/01-origins/index.html"
     ]
   }
