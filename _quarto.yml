@@ -31,6 +31,10 @@ format:
     grid:
       margin-width: 600px
     respect-user-color-scheme: true
+    include-in-header:
+         text: |
+           <script data-goatcounter="https://gabortamas.goatcounter.com/count"
+                   async src="//gc.zgo.at/count.js"></script>
     css: styles.css
     lang: en
     toc: true
