@@ -19,7 +19,7 @@ In 1963, they subjected a paper (Problems in the Analysis of Survey Data, and a 
 ::: {.callout-note}
 ## About the sample
 Throughout this article we use a small sample of 20 observations,
-so every step of the calculation can be followed by hand. 20 observation is definitely too few to avoid the possibility to end up with silly or absurd results, but this sample size is adequate to illustrate the basic principles of the algorithm.
+so every step of the calculation can be followed by hand. 20 observation is definitely too few to avoid the possibility to end up with silly or absurd results, but this sample size is adequate to illustrate the basic calculation logic of the first algorithm. From the second article onwards, we will use larger datasets to illustrate the calculations on a more realistic circumstance.
 :::
 
 ::: {.column-margin .small-table}

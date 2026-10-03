@@ -1,0 +1,7 @@
+---
+title: "2. Chaid and the c4.5 algorithms"
+subtitle: "Decision Trees Series, Part 2"
+author: "Tamas Gabor"
+date: 2026-10-02
+categories: [decision trees, history]
+---

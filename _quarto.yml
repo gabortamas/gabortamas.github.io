@@ -14,7 +14,6 @@ website:
   sidebar:
     style: docked
     contents:
-      - articles.qmd
       - section: "Decision Trees"
         href: articles/decision-trees/index.qmd
         contents: "articles/decision-trees/*/index.qmd"
