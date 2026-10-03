@@ -313,7 +313,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../../../articles.html" aria-current="page"> 
+    <a class="nav-link" href="../../../articles.html"> 
 <span class="menu-text">Articles</span></a>
   </li>  
   <li class="nav-item">
@@ -344,12 +344,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../../articles.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Articles</span></a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="../../../articles/decision-trees/index.html" class="sidebar-item-text sidebar-link">
@@ -368,7 +362,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../articles/decision-trees/02-c4.5/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Index</span></a>
+ <span class="menu-text">2. Chaid and the c4.5 algorithms</span></a>
   </div>
 </li>
       </ul>
@@ -459,7 +453,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Throughout this article we use a small sample of 20 observations, so every step of the calculation can be followed by hand. 20 observation is definitely too few to avoid the possibility to end up with silly or absurd results, but this sample size is adequate to illustrate the basic principles of the algorithm.</p>
+<p>Throughout this article we use a small sample of 20 observations, so every step of the calculation can be followed by hand. 20 observation is definitely too few to avoid the possibility to end up with silly or absurd results, but this sample size is adequate to illustrate the basic calculation logic of the first algorithm. From the second article onwards, we will use larger datasets to illustrate the calculations on a more realistic circumstance.</p>
 </div>
 </div>
 
@@ -622,7 +616,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section></div><section id="the-interaction-effects" class="level3">
 <h3 class="anchored" data-anchor-id="the-interaction-effects">The interaction effects</h3>
 <p>Without going into the interaction effects of the multi-variate regressions,</p>
-<div id="2527819b" class="cell" data-execution_count="1">
+<div id="d12fcbfb" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
