@@ -116,6 +116,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <script data-goatcounter="https://gabortamas.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../../styles.css">
 </head>
@@ -453,7 +482,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Throughout this article we use a small sample of 20 observations, so every step of the calculation can be followed by hand. 20 observation is definitely too few to avoid the possibility to end up with silly or absurd results, but this sample size is adequate to illustrate the basic calculation logic of the first algorithm. From the second article onwards, we will use larger datasets to illustrate the calculations on a more realistic circumstance.</p>
+<p>Throughout this article we use a small sample of 20 observations, so every step of the calculation can be followed by hand. 20 observations are definitely too few to avoid the possibility to end up with silly or absurd results, but this sample size is adequate to illustrate the basic calculation logic of the first algorithm. From the second article onwards, we will use larger datasets to illustrate the calculations on a more realistic circumstance.</p>
 </div>
 </div>
 
@@ -615,8 +644,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section></div><section id="the-interaction-effects" class="level3">
 <h3 class="anchored" data-anchor-id="the-interaction-effects">The interaction effects</h3>
-<p>Without going into the interaction effects of the multi-variate regressions,</p>
-<div id="d12fcbfb" class="cell" data-execution_count="1">
+<p>The interaction effect in multivariate regression models So, the standard tool of the day in the 1960s was regression, which could well describe how explanatory variables (e.g.&nbsp;age, occupation, income, education) affect the dependent variable (e.g.&nbsp;monthly savings of a household).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Regression models
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This article intends to touch regression to that extent that’s minimally necessary to understand the interaction effect between the explanatory variables.</p>
+</div>
+</div>
+<p>For simplicity, let’s use two (“yes or no”, “dichotomy”) explanatory variables in our example to predict the amount of savings as target (dependent) variable.</p>
+<p><span class="math display">\[
+\widehat{\text{Savings}} = 1.15 + 4.30 \cdot \text{Owner} + 1.90 \cdot \text{Old}
+\qquad (R^2 = 0.73)
+\]</span></p>
+<div id="ff260837" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
