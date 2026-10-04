@@ -19,7 +19,7 @@ In 1963, they subjected a paper (Problems in the Analysis of Survey Data, and a 
 ::: {.callout-note}
 ## About the sample
 Throughout this article we use a small sample of 20 observations,
-so every step of the calculation can be followed by hand. 20 observation is definitely too few to avoid the possibility to end up with silly or absurd results, but this sample size is adequate to illustrate the basic calculation logic of the first algorithm. From the second article onwards, we will use larger datasets to illustrate the calculations on a more realistic circumstance.
+so every step of the calculation can be followed by hand. 20 observations are definitely too few to avoid the possibility to end up with silly or absurd results, but this sample size is adequate to illustrate the basic calculation logic of the first algorithm. From the second article onwards, we will use larger datasets to illustrate the calculations on a more realistic circumstance.
 :::
 
 ::: {.column-margin .small-table}
@@ -55,7 +55,21 @@ Own = owns home (Y/N); Reg = region (C = City, T = Town, V = Village); Sav = sav
 
 ### The interaction effects
 
-Without going into the interaction effects of the multi-variate regressions, 
+The interaction effect in multivariate regression models
+So, the standard tool of the day in the 1960s was regression, which could well describe how explanatory variables (e.g. age, occupation, income, education) affect the dependent variable (e.g. monthly savings of a household).
+
+::: {.callout-note}
+## Regression models
+This article intends to touch regression to that extent that’s minimally necessary to understand the interaction effect between the explanatory variables. 
+:::
+
+For simplicity, let’s use two (“yes or no”, “dichotomy”) explanatory variables in our example to predict the amount of savings as target (dependent) variable.
+
+$$
+\widehat{\text{Savings}} = 1.15 + 4.30 \cdot \text{Owner} + 1.90 \cdot \text{Old}
+\qquad (R^2 = 0.73)
+$$
+
 
 ```{python}
 #| code-fold: true
