@@ -24,6 +24,10 @@ so every step of the calculation can be followed by hand. 20 observations are de
 
 ::: {.column-margin .small-table}
 
+---
+
+Note 1.
+
 ### Sample data
 
 Own = owns home (Y/N); Reg = region (C = City, T = Town, V = Village); Sav = savings.
@@ -53,23 +57,19 @@ Own = owns home (Y/N); Reg = region (C = City, T = Town, V = Village); Sav = sav
 
 :::
 
-### The interaction effects
 
-The interaction effect in multivariate regression models
-So, the standard tool of the day in the 1960s was regression, which could well describe how explanatory variables (e.g. age, occupation, income, education) affect the dependent variable (e.g. monthly savings of a household).
+### The interaction effect
+
+The standard tool of the day in the 1960s was regression, which could well describe how explanatory variables (e.g. age, occupation, income, education) affect the dependent variable (e.g. monthly savings of a household).
 
 ::: {.callout-note}
 ## Regression models
 This article intends to touch regression to that extent that’s minimally necessary to understand the interaction effect between the explanatory variables. 
 :::
 
-For simplicity, let’s use two (“yes or no”, “dichotomy”) explanatory variables in our example to predict the amount of savings as target (dependent) variable.
+For simplicity, let’s use two (“yes or no”, “dichotomy”) explanatory variables in our example to predict the amount of savings as target (dependent) variable: 'Owner': whether the household owns its home (1 = yes, 0 = no), 'Old': whether the household head is older than 50 years (1 = yes, 0 = no)
 
-$$
-\widehat{\text{Savings}} = 1.15 + 4.30 \cdot \text{Owner} + 1.90 \cdot \text{Old}
-\qquad (R^2 = 0.73)
-$$
-
+Let's present here a simple code snippet that generates the simple example data, runs the linear regression, and prints the coefficients of the explanatory variables. Coefficents in simple terms are the average impact of the explanatory variable on the dependent variable, while holding all other explanatory variables constant.
 
 ```{python}
 #| code-fold: true
@@ -85,7 +85,61 @@ df = pd.DataFrame({
 })
 
 print(smf.ols("savings ~ owner + old", df).fit().params)
-print(smf.ols("savings ~ owner * old", df).fit().params)
 ```
 
+So, the linear regression model looks like the below:
+
+$$
+\widehat{\text{Savings}} = 1.15 + 4.30 \cdot \text{Owner} + 1.90 \cdot \text{Old}
+\qquad (R^2 = 0.73)
+$$
+
+According to our simple linear regression model, the average savings of households that do not own their home and are younger than 50 years is $1.15. This is what the so-called intercept tells us. If the household owns its home, the average savings increases by $4.30, so the amount of savings would be $1.15 + $4.30 = $5.45. And if the household head is older than 50 years but does not own its home, the average savings increases by $1.90, so the amount of savings would be $1.15 + $1.90 = $3.05. In short: owning the home adds $4.3, and the head of the household being 50+ adds $1.90.
+
+The results of such linear regression models like the above is estathically pleasing, probably because of its simple and straightforward nature. We can get to know the clear and independent impact of each explanatory variables on the dependent variable. 
+
+But theres a catch: the model quietly assumes something that we can call 'additivity'. So that, the model thinks that the impact of being over 50 years old on the savingsis the same for both homeowners and those who do not own their home. But is it really so? Is the impact of being over 50 years old the same for homeowners and non-homeowners? Or does it depend on whether the household owns its home or not? In real world, we must assume that the age and home ownership are not independent of each other, and the impact of being over 50 years old on the savings is different for homeowners and non-homeowners.
+
+```{python}
+#| code-fold: true
+#| code-summary: "Show the code"
+print(smf.ols("savings ~ owner + old + owner:old", df).fit().params)
+```
+
+
+
+::: {.column-margin .side-calc}
+
+---
+
+Note 2.
+
+#### The regression results
+
+**Additive model:** Savings = 1.15 + 4.30·Owner + 1.90·Old  (R² = 0.73)
+**Interaction model:** Savings = 2.2 + 2.2·Owner − 0.2·Old + 4.2·(Owner × Old)  (R² = 0.87)
+
+| Group             | Savings        | Average | Additive prediction | Additive error | Interaction prediction | Interaction error |
+|-------------------|----------------|---------|---------------------|----------------|------------------------|-------------------|
+| Renters, under 50 | 2, 1, 3, 3, 2  | 2.2     | 1.15                | −1.05          | 2.2                    | 0                 |
+| Renters, 50+      | 2, 4, 1, 2, 1  | 2.0     | 3.05                | +1.05          | 2.0                    | 0                 |
+| Owners, under 50  | 3, 4, 4, 5, 6  | 4.4     | 5.45                | +1.05          | 4.4                    | 0                 |
+| Owners, 50+       | 7, 8, 9, 8, 10 | 8.4     | 7.35                | −1.05          | 8.4                    | 0                 |
+
+The additive model is wrong about every group because it gives everyone the same age bonus of 1.9. The real bonus is +4.0 for owners and −0.2 for renters. Adding the interaction term fixes it, but only because we knew to add it.
+
+---
+
+:::
+
+
+
+Knowing the coefficients we can write down the new linear regression model that includes the interaction effect between the two explanatory variables:
+
+$$
+\widehat{\text{Savings}} = 2.20 + 2.20 \cdot \text{Owner} - 0.20 \cdot \text{Old} + 4.20 \cdot ( \text{Owner} \times \text{Old} )
+\qquad (R^2 = 0.87)
+$$
+
+Now the "age effect" is −0.20 for renters and −0.2 + 4.2 = 4.0 for owners, and the model can predict all four averages exactly. So
 

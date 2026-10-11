@@ -26,7 +26,7 @@ format:
   html:
     theme:
       light: [cosmo, brand, light.scss]
-      dark: cyborg
+      dark: [cyborg, dark.scss]
     grid:
       margin-width: 600px
     respect-user-color-scheme: true
