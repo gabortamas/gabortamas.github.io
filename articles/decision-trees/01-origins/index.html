@@ -663,7 +663,7 @@ window.Quarto = {
 </div>
 <p>For simplicity, let’s use two (“yes or no”, “dichotomy”) explanatory variables in our example to predict the amount of savings as target (dependent) variable: ‘Owner’: whether the household owns its home (1 = yes, 0 = no), ‘Old’: whether the household head is older than 50 years (1 = yes, 0 = no)</p>
 <p>Let’s present here a simple code snippet that generates the simple example data, runs the linear regression, and prints the coefficients of the explanatory variables. Coefficents in simple terms are the average impact of the explanatory variable on the dependent variable, while holding all other explanatory variables constant.</p>
-<div id="1db1c2ae" class="cell" data-execution_count="1">
+<div id="8094dfc3" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -693,7 +693,7 @@ dtype: float64</code></pre>
 <p>According to our simple linear regression model, the average savings of households that do not own their home and are younger than 50 years is $1.15. This is what the so-called intercept tells us. If the household owns its home, the average savings increases by $4.30, so the amount of savings would be $1.15 + $4.30 = $5.45. And if the household head is older than 50 years but does not own its home, the average savings increases by $1.90, so the amount of savings would be $1.15 + $1.90 = $3.05. In short: owning the home adds $4.3, and the head of the household being 50+ adds $1.90.</p>
 <p>The results of such linear regression models like the above is estathically pleasing, probably because of its simple and straightforward nature. We can get to know the clear and independent impact of each explanatory variables on the dependent variable.</p>
 <p>But theres a catch: the model quietly assumes something that we can call ‘additivity’. So that, the model thinks that the impact of being over 50 years old on the savingsis the same for both homeowners and those who do not own their home. But is it really so? Is the impact of being over 50 years old the same for homeowners and non-homeowners? Or does it depend on whether the household owns its home or not? In real world, we must assume that the age and home ownership are not independent of each other, and the impact of being over 50 years old on the savings is different for homeowners and non-homeowners.</p>
-<div id="25be2070" class="cell" data-execution_count="2">
+<div id="17ed7ff2" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(smf.ols(<span class="st">"savings ~ owner + old + owner:old"</span>, df).fit().params)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -781,7 +781,14 @@ dtype: float64</code></pre>
 \widehat{\text{Savings}} = 2.20 + 2.20 \cdot \text{Owner} - 0.20 \cdot \text{Old} + 4.20 \cdot ( \text{Owner} \times \text{Old} )
 \qquad (R^2 = 0.87)
 \]</span></p>
-<p>Now the “age effect” is −0.20 for renters and −0.2 + 4.2 = 4.0 for owners, and the model can predict all four averages exactly. So</p>
+<p>Now the “age effect” is −0.20 for renters and −0.2 + 4.2 = 4.0 for owners, and the model can predict all four averages exactly. So we can prove that the age effect depends on whether the household owns its home or not. In other words, the two explanatory variables are not independent of each other, and they interact with each other in their effect on the dependent variable.</p>
+<p>We can also prove that the regression is an adequate method to capture the interaction effect between the explanatory variables, but only if we know about the interaction term and we explicitly include it.</p>
+<div class="key-point">
+<p>We can also prove that the regression is an adequate method to capture the interaction effect between the explanatory variables, but <strong>only if we know about the interaction term and we explicitly include it</strong>.</p>
+</div>
+<div class="highlight-box">
+<p>We can also prove that the regression is an adequate method to capture the interaction effect between the explanatory variables, but only if we know about the interaction term and we explicitly include it. And exactly that was that bothered Morgan and Sonquist the most: they had to count with each and every possible interaction term between the explanatory variables in advance, and they had to explicitly include them in the regression model.</p>
+</div>
 
 
 </section>
