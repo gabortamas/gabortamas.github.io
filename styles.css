@@ -39,3 +39,21 @@ h1, h2, h3, h4, h5, h6,
 .small-table table {
   font-size: 0.85em;
 }
+
+.key-point {
+  border-left: 4px solid #d9822b;
+  padding: 0.3em 0 0.3em 1em;
+  margin: 1.5em 0;
+  font-size: 1.15em;
+  font-style: italic;
+}
+
+.highlight-box {
+  background: rgba(16, 151, 12, 0.12);
+  border-radius: 6px;
+  padding: 0.8em 1em;
+  margin: 1.5em 0;
+}
+.highlight-box > :last-child {
+  margin-bottom: 0;
+}

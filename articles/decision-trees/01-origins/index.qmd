@@ -141,5 +141,19 @@ $$
 \qquad (R^2 = 0.87)
 $$
 
-Now the "age effect" is −0.20 for renters and −0.2 + 4.2 = 4.0 for owners, and the model can predict all four averages exactly. So
+Now the "age effect" is −0.20 for renters and −0.2 + 4.2 = 4.0 for owners, and the model can predict all four averages exactly. So we can prove that the age effect depends on whether the household owns its home or not. In other words, the two explanatory variables are not independent of each other, and they interact with each other in their effect on the dependent variable.
+
+We can also prove that the regression is an adequate method to capture the interaction effect between the explanatory variables, but only if we know about the interaction term and we explicitly include it.
+
+::: {.key-point}
+We can also prove that the regression is an adequate method to capture the interaction effect between the explanatory variables, but **only if we know about the interaction term and we explicitly include it**.
+:::
+
+
+::: {.highlight-box}
+
+We can also prove that the regression is an adequate method to capture the interaction effect between the explanatory variables, but only if we know about the interaction term and we explicitly include it. And exactly that was that bothered Morgan and Sonquist the most: they had to count with each and every possible interaction term between the explanatory variables in advance, and they had to explicitly include them in the regression model.
+
+:::
+
 
