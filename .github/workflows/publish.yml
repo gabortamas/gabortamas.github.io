@@ -1,0 +1,38 @@
+# Renders the Quarto site and publishes it to the gh-pages branch.
+# Runs on every push/merge to main, and can be started by hand from
+# the Actions tab ("Run workflow").
+#
+# Code outputs come from the committed _freeze/ folder (freeze: auto),
+# so Python is not needed here. Render code-heavy articles locally
+# and commit _freeze/ before pushing.
+
+name: Publish site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-site
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render and publish to gh-pages
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
