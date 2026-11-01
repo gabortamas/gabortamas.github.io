@@ -3,4 +3,4 @@ title: "About"
 sidebar: false
 ---
 
-About this site
+I'm a sociologist, statistician, and data scientist. I have always been fascinated by the magic of how statistical algorithms and models can reveal intelligence from raw data.
