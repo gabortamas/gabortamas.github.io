@@ -2,34 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://gabortamas.github.io/index.html</loc>
-    <lastmod>2026-09-29T17:31:08.541Z</lastmod>
-  </url>
-  <url>
-    <loc>https://gabortamas.github.io/articles/gen-ai-and-agentic-workflow/index.html</loc>
-    <lastmod>2026-09-28T18:53:59.320Z</lastmod>
-  </url>
-  <url>
-    <loc>https://gabortamas.github.io/articles/decision-trees/02-c4.5/index.html</loc>
-    <lastmod>2026-10-02T20:25:07.442Z</lastmod>
-  </url>
-  <url>
-    <loc>https://gabortamas.github.io/articles/causal-inference/index.html</loc>
-    <lastmod>2026-09-27T18:06:55.172Z</lastmod>
-  </url>
-  <url>
-    <loc>https://gabortamas.github.io/about.html</loc>
-    <lastmod>2026-09-27T18:57:22.967Z</lastmod>
-  </url>
-  <url>
-    <loc>https://gabortamas.github.io/articles/decision-trees/01-origins/index.html</loc>
-    <lastmod>2026-10-26T20:52:02.651Z</lastmod>
+    <lastmod>2026-11-01T12:07:23.701Z</lastmod>
   </url>
   <url>
     <loc>https://gabortamas.github.io/articles/decision-trees/index.html</loc>
-    <lastmod>2026-09-27T21:21:56.397Z</lastmod>
+    <lastmod>2026-11-01T12:07:23.679Z</lastmod>
+  </url>
+  <url>
+    <loc>https://gabortamas.github.io/articles/decision-trees/01-origins/index.html</loc>
+    <lastmod>2026-11-01T12:07:23.679Z</lastmod>
+  </url>
+  <url>
+    <loc>https://gabortamas.github.io/articles/causal-inference/index.html</loc>
+    <lastmod>2026-11-01T12:07:23.679Z</lastmod>
+  </url>
+  <url>
+    <loc>https://gabortamas.github.io/about.html</loc>
+    <lastmod>2026-11-01T12:07:23.679Z</lastmod>
+  </url>
+  <url>
+    <loc>https://gabortamas.github.io/articles/gen-ai-and-agentic-workflow/index.html</loc>
+    <lastmod>2026-11-01T12:07:23.679Z</lastmod>
+  </url>
+  <url>
+    <loc>https://gabortamas.github.io/articles/decision-trees/02-c4.5/index.html</loc>
+    <lastmod>2026-11-01T12:07:23.679Z</lastmod>
   </url>
   <url>
     <loc>https://gabortamas.github.io/articles.html</loc>
-    <lastmod>2026-09-27T18:09:31.975Z</lastmod>
+    <lastmod>2026-11-01T12:07:23.679Z</lastmod>
   </url>
 </urlset>

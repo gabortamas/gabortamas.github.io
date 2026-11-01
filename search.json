@@ -7,24 +7,6 @@
     "text": "Welcome to the site dedicated to articles about intelligence constructed from data and algorithms as tools for that.\nThe articles here cover a range of topics, mostly about statistical and traditional machine learning algorithms, as well as causal inference. The main aim of this site to act as a ‘personal but public’ notebook serving as a platform to organize my own thoughts around arbitrary chosen topics I’m fascinated by.\nI intend to write my notes as structured, well-written articles with the main focus on the understandability, and a desired audience of a general non-technical public."
   },
   {
-    "objectID": "articles/causal-inference/index.html",
-    "href": "articles/causal-inference/index.html",
-    "title": "Series overview",
-    "section": "",
-    "text": "A short introduction to the series goes here.\n\n\n\n\n\n\n\n\nNo matching items",
-    "crumbs": [
-      "Home",
-      "Causal Inference"
-    ]
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site"
-  },
-  {
     "objectID": "articles/decision-trees/01-origins/index.html",
     "href": "articles/decision-trees/01-origins/index.html",
     "title": "1. The First Seeds of Trees",
@@ -47,6 +29,24 @@
       "Decision Trees",
       "1. The First Seeds of Trees"
     ]
+  },
+  {
+    "objectID": "articles/causal-inference/index.html",
+    "href": "articles/causal-inference/index.html",
+    "title": "Series overview",
+    "section": "",
+    "text": "A short introduction to the series goes here.\n\n\n\n\n\n\n\n\nNo matching items",
+    "crumbs": [
+      "Home",
+      "Causal Inference"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "I’m a sociologist, statistician, and data scientist. I have always been fascinated by the magic of how statistical algorithms and models can reveal intelligence from raw data."
   },
   {
     "objectID": "articles.html",
