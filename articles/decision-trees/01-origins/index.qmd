@@ -13,10 +13,6 @@ While this series of articles about Decision Trees focuses primarily on the meth
 
 ## Automatic Interaction Detection (1963)
 
-In the first half of the 1960s, two researchers, James N. Morgan and John A. Sonquist at the University of Michigan spent most of their time analyzing US households survey data. They long had concerns with a fundamental limitation of the most commonly used statistical modelling tool of the time: the multivariate regression. Even though regression was very popular, this statistical modelling tool had multiple well-known limitations, but what bothered these two researchers the most were that the explanatory variables in real life often had intercorrelations and heavy interactions with each other.
-
-In 1963, they submitted a paper (Problems in the Analysis of Survey Data, and a Proposal) to the Journal of the American Statistical Association, that became one of the earliest and most known precedent of proposing 'seeding' of decision trees. In the paper, they illustrated the problem with real survey data on households' income (from the 1959 Survey of Consumer Finances): age and education, they showed, simply could not operate additively with factors like race, retirement status, and whether the household head was a farmer. The algorithm itself was only proposed in the paper; the working computer program followed a year later.
-
 ::: {.column-margin .small-table}
 
 ---
@@ -57,6 +53,9 @@ HS = finished high school (Y/N); Reg = region (C = City, T = Town, V = Village);
 
 :::
 
+In the first half of the 1960s, two researchers, James N. Morgan and John A. Sonquist at the University of Michigan spent most of their time analyzing US households survey data. They long had concerns with a fundamental limitation of the most commonly used statistical modelling tool of the time: the multivariate regression. Even though regression was very popular, this statistical modelling tool had multiple well-known limitations, but what bothered these two researchers the most were that the explanatory variables in real life often had intercorrelations and heavy interactions with each other.
+
+In 1963, they submitted a paper (Problems in the Analysis of Survey Data, and a Proposal) to the Journal of the American Statistical Association, that became one of the earliest and most known precedent of proposing 'seeding' of decision trees. In the paper, they illustrated the problem with real survey data on households' income (from the 1959 Survey of Consumer Finances): age and education, they showed, simply could not operate additively with factors like race, retirement status, and whether the household head was a farmer. The algorithm itself was only proposed in the paper; the working computer program followed a year later.
 
 ### The interaction effect
 
