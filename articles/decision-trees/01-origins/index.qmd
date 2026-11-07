@@ -17,14 +17,6 @@ In the first half of the 1960s, two researchers, James N. Morgan and John A. Son
 
 In 1963, they submitted a paper (Problems in the Analysis of Survey Data, and a Proposal) to the Journal of the American Statistical Association, that became one of the earliest and most known precedent of proposing 'seeding' of decision trees. In the paper, they illustrated the problem with real survey data on households' income (from the 1959 Survey of Consumer Finances): age and education, they showed, simply could not operate additively with factors like race, retirement status, and whether the household head was a farmer. The algorithm itself was only proposed in the paper; the working computer program followed a year later.
 
-::: {.callout-note}
-## About the sample
-Throughout this article we use a small sample of 20 observations,
-so every step of the calculation can be followed by hand. 20 observations are definitely too few to avoid the possibility to end up with silly or absurd results, but this sample size is adequate to illustrate the basic calculation logic of the first algorithm. From the second article onwards, we will use larger datasets to illustrate the calculations on a more realistic circumstance.
-
-Following Morgan and Sonquist's own example, our dependent variable is the household's annual income, measured in thousands of dollars of the late 1950s. As in the original paper's table, every household head in our sample is still working: the oldest group (65+) contains no retirees.
-:::
-
 ::: {.column-margin .small-table}
 
 ---
@@ -32,6 +24,11 @@ Following Morgan and Sonquist's own example, our dependent variable is the house
 Note 1.
 
 ### Sample data
+
+Throughout this article we use a small sample of 20 observations,
+so every step of the calculation can be followed by hand. 20 observations are definitely too few to avoid the possibility to end up with silly or absurd results, but this sample size is adequate to illustrate the basic calculation logic of the first algorithm. From the second article onwards, we will use larger datasets to illustrate the calculations on a more realistic circumstance.
+
+Following Morgan and Sonquist's own example, our dependent variable is the household's annual income, measured in thousands of dollars of the late 1950s. As in the original paper's table, every household head in our sample is still working: the oldest group (65+) contains no retirees.
 
 HS = finished high school (Y/N); Reg = region (C = City, T = Town, V = Village); Inc = annual income ($1,000s).
 
