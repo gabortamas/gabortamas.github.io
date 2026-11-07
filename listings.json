@@ -1,13 +1,14 @@
 [
   {
-    "listing": "/articles/causal-inference/index.html",
-    "items": []
-  },
-  {
     "listing": "/articles.html",
     "items": [
       "/articles/decision-trees/02-c4.5/index.html",
+      "/articles/decision-trees/01-origins-income/index.html",
       "/articles/decision-trees/01-origins/index.html"
     ]
+  },
+  {
+    "listing": "/articles/causal-inference/index.html",
+    "items": []
   }
 ]
