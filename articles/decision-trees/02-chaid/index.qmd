@@ -1,0 +1,627 @@
+---
+title: "2. The Tree That Learned to Doubt"
+subtitle: "Decision Trees Series, Part 2"
+author: "Tamas Gabor"
+date: 2026-11-10
+categories: [decision trees, history]
+---
+
+In the [first article](../01-origins/index.qmd) we left James Morgan and John Sonquist in Ann Arbor with a clever idea. Instead of guessing in advance which explanatory variables interact with each other, let a computer program cut the sample into two groups again and again, and let the interactions show themselves in the shape of the resulting tree. They called the program the Automatic Interaction Detector, or AID.
+
+AID had one habit, however, that made statisticians nervous: it never doubted itself. Give it any data and it found a split. Give it pure noise and it still found a split, and it presented that split with the same confidence as a real one.
+
+This article is about the tree that learned to doubt. It was worked out in Johannesburg, South Africa, in the 1970s, its name is CHAID, and for about two decades it was one of the most widely used tree algorithms in market research. Before every split it asks a question that AID never asked: *could this difference be just luck?*
+
+## The trouble with AID (1964–1975)
+
+Let's start with a quick reminder of how AID worked. The dependent variable is a number (in Part 1 it was the household's income). For every explanatory variable, the program tries every allowed way of cutting the sample into two groups, and it keeps the cut after which the averages of the two groups are as far from each other as possible. Formally, it keeps the cut that gives the largest reduction in the unexplained sum of squares. Then it does the same inside each of the two new groups, and so on, until the groups become too small or the gain becomes negligible.
+
+::: {.column-margin .side-calc}
+
+---
+
+Note 1.
+
+#### AID was not alone
+
+Morgan and Sonquist's program is the best-known ancestor of today's trees, but similar ideas were in the air in several places.
+
+| Method | Who and when | What it did |
+|--------|--------------|-------------|
+| Belson's method | William Belson, UK, 1959 | Two-way splits of survey respondents, for matching and prediction |
+| AID | Morgan and Sonquist, USA, 1963 | Two-way splits for a numeric dependent variable |
+| ELISEE | France, late 1960s | Two-way splits for a categorical dependent variable |
+| THAID | Messenger and Mandell, USA, 1972 | AID's logic for a categorical dependent variable |
+| CHAID | Kass, South Africa, 1980 | Multi-way splits chosen by significance tests |
+
+Gilbert Ritschard's survey (2013) gives a detailed account of these early methods.
+
+---
+
+:::
+
+The working program was ready in 1964, and it spread quickly, first in survey research and then in market research. It is easy to see why. Here was a method that needed no model written down in advance, and whose result could be drawn on a single page. Looking back a few years later, its authors described it as a program born "in rebellion against the restrictive assumptions of conventional multivariate techniques".
+
+But rebellions attract critics, and through the first half of the 1970s the list of complaints grew longer.
+
+**It finds structure in noise.** In 1972 the psychologist Hillel Einhorn published a paper with the unflattering title *Alchemy in the Behavioral Sciences*. He used simulations to show that a search procedure like AID can badly overfit: it produces a neat-looking tree even when there is nothing to find. (Morgan answered him in the same journal a year later, so the debate was a lively one.)
+
+**It needs a lot of data, and it was used with little.** Peter Doyle pointed out in 1973 that Morgan and Sonquist themselves had asked for samples of a thousand cases or more, while in practice the program was happily run on samples of less than a hundred. And because the first split decides everything that comes below it, a little noise at the top can change the whole story the tree tells. Two years later a paper in the *Journal of Marketing Research* simply carried the title *The Pitfalls of AID Analysis*.
+
+**It gives an unfair advantage to variables with many categories.** A yes-or-no variable can be cut in exactly one way. A variable with three unordered categories can be cut into two groups in three ways. A variable with twelve unordered categories can be cut in 2,047 ways. If the program picks the best cut it can find, the variable that offers 2,047 attempts will win more often than it deserves, even if it has nothing to do with the dependent variable.
+
+**It was limited.** Every split was a two-way split, and the dependent variable had to be a number. The second limitation was eased in 1972–73 by a sister program called THAID, which handled categorical dependent variables. But THAID searched in the same way as AID, so it inherited the same weaknesses.
+
+::: {.key-point}
+
+All these complaints have a common root. AID could tell which split was the *best*. It had no way to tell whether the best was *good enough*.
+
+:::
+
+## Gordon Kass and the chi-square (1975–1980)
+
+The person who took this problem seriously was Gordon V. Kass, a doctoral student at the University of the Witwatersrand in Johannesburg, working under the statistician Douglas M. Hawkins. The title of his thesis, accepted in 1975, reads like a work plan: *Significance testing in, and some extensions of, automatic interaction detection*.
+
+The first half of that title became a paper in the journal *Applied Statistics* in the same year. Kass asked a question that sounds simple: if in truth nothing is going on in the data, how large will the best split found by AID look? The ordinary textbook tables cannot answer this, because they assume that we test one split that we chose in advance, not the winner of a long search. Kass worked out the correct critical values for a special case, and other statisticians soon followed with approximations for more general ones.
+
+The second half of the title, the "extensions", needed five more years to appear in print. In 1980 the same journal published nine pages with a modest title: *An Exploratory Technique for Investigating Large Quantities of Categorical Data*. The technique had a short name, CHAID, for **CH**i-squared **A**utomatic **I**nteraction **D**etection. Kass described it as an offshoot of AID, and he changed three things.
+
+1. **The dependent variable is categorical**, and the strength of a relationship is measured with a statistical test, the chi-square test. As a consequence, the tree is split by the *most significant* explanatory variable, and not by the one that explains the most.
+2. **Splits can have more than two branches.** Categories that behave alike are merged, categories that behave differently stay apart, and the data decide how many branches remain.
+3. **Missing answers get their own treatment.** Kass introduced a new type of explanatory variable in which the "don't know" category is allowed to join whichever group it resembles the most.
+
+From here on we will call the explanatory variables *predictors*, as Kass did. And before we can follow his algorithm, we need the tool that gives CHAID the first two letters of its name.
+
+## The chi-square test in five minutes
+
+::: {.column-margin .small-table}
+
+---
+
+Note 2.
+
+#### Sample data
+
+A mail-order book club sent its catalogue to 1,000 households and recorded which of them placed an order. The households are described by the same three characteristics as in Part 1, but there are now enough of them that we work with counts instead of single rows.
+
+HS = household head finished high school (Y/N); Hh = number of households; Ord = number of households that ordered.
+
+| Age   | HS | Region  | Hh | Ord |
+|-------|----|---------|----|-----|
+| <35   | Y  | City    | 70 | 4   |
+| <35   | Y  | Town    | 50 | 4   |
+| <35   | Y  | Village | 30 | 7   |
+| <35   | N  | City    | 40 | 2   |
+| <35   | N  | Town    | 30 | 3   |
+| <35   | N  | Village | 30 | 6   |
+| 35–49 | Y  | City    | 70 | 19  |
+| 35–49 | Y  | Town    | 50 | 13  |
+| 35–49 | Y  | Village | 40 | 11  |
+| 35–49 | N  | City    | 50 | 6   |
+| 35–49 | N  | Town    | 50 | 7   |
+| 35–49 | N  | Village | 40 | 5   |
+| 50–64 | Y  | City    | 45 | 14  |
+| 50–64 | Y  | Town    | 35 | 11  |
+| 50–64 | Y  | Village | 30 | 9   |
+| 50–64 | N  | City    | 45 | 7   |
+| 50–64 | N  | Town    | 50 | 8   |
+| 50–64 | N  | Village | 45 | 7   |
+| 65+   | Y  | City    | 25 | 6   |
+| 65+   | Y  | Town    | 25 | 10  |
+| 65+   | Y  | Village | 20 | 9   |
+| 65+   | N  | City    | 40 | 10  |
+| 65+   | N  | Town    | 45 | 18  |
+| 65+   | N  | Village | 45 | 18  |
+| **All** |  |         | **1,000** | **214** |
+
+The numbers are invented for this article, so that every calculation comes out clean enough to follow by hand.
+
+---
+
+:::
+
+As promised in the first article, we now leave the 20 households behind and move to a larger sample. Our example comes from the world where CHAID later became famous: direct marketing.
+
+A mail-order book club sent its catalogue to 1,000 households. 214 of them placed an order, which is a response rate of 21.4%. The club knows three things about every household, and they are the same three things we used in Part 1: the age of the household head (under 35, 35–49, 50–64, 65 or older), whether the household head finished high school (yes or no), and where the household lives (city, town or village). The full data are in Note 2.
+
+The club's question is a practical one. Postage is expensive, so next time it would like to send the catalogue only to the kinds of households that are likely to order. Which kinds are those?
+
+Notice what has changed compared with Part 1. The dependent variable is no longer a number like income. It is a category: the household ordered, or it did not. There is no average to compute and no sum of squares to reduce, so we need a different measuring tool.
+
+```{python}
+#| code-fold: true
+#| code-summary: "Show the code"
+import pandas as pd
+
+# households and orders in each of the 24 combinations (see Note 2)
+cells = [
+    # age,    hs,  region,   households, orders
+    ("<35",   "Y", "City",    70,  4), ("<35",   "Y", "Town",    50,  4), ("<35",   "Y", "Village", 30,  7),
+    ("<35",   "N", "City",    40,  2), ("<35",   "N", "Town",    30,  3), ("<35",   "N", "Village", 30,  6),
+    ("35-49", "Y", "City",    70, 19), ("35-49", "Y", "Town",    50, 13), ("35-49", "Y", "Village", 40, 11),
+    ("35-49", "N", "City",    50,  6), ("35-49", "N", "Town",    50,  7), ("35-49", "N", "Village", 40,  5),
+    ("50-64", "Y", "City",    45, 14), ("50-64", "Y", "Town",    35, 11), ("50-64", "Y", "Village", 30,  9),
+    ("50-64", "N", "City",    45,  7), ("50-64", "N", "Town",    50,  8), ("50-64", "N", "Village", 45,  7),
+    ("65+",   "Y", "City",    25,  6), ("65+",   "Y", "Town",    25, 10), ("65+",   "Y", "Village", 20,  9),
+    ("65+",   "N", "City",    40, 10), ("65+",   "N", "Town",    45, 18), ("65+",   "N", "Village", 45, 18),
+]
+
+# one row per household
+rows = []
+for age, hs, region, households, orders in cells:
+    rows += [(age, hs, region, "Yes")] * orders
+    rows += [(age, hs, region, "No")] * (households - orders)
+df = pd.DataFrame(rows, columns=["age", "hs", "region", "ordered"])
+
+print(len(df), "households,", (df["ordered"] == "Yes").sum(), "orders")
+```
+
+### Observed and expected
+
+Let's take two of the age groups and ask a simple question: do households aged 35–49 and households aged 50–64 respond differently to the catalogue?
+
+| Age of household head | Ordered | Did not order | Total | Response rate |
+|-----------------------|---------|---------------|-------|---------------|
+| 35–49                 | 61      | 239           | 300   | 20.3%         |
+| 50–64                 | 56      | 194           | 250   | 22.4%         |
+| Both groups           | 117     | 433           | 550   | 21.3%         |
+
+The older group responded a little better, 22.4% against 20.3%. But a little difference always shows up between any two groups, just as two coins tossed a hundred times each will rarely give exactly the same number of heads. The question is whether this difference is larger than what chance alone usually produces.
+
+The chi-square test answers it in three small steps.
+
+**Step one: imagine that age makes no difference at all.** Then both groups would respond at the common rate of 21.3%. Among the 300 households aged 35–49 we would *expect* 300 × 117 / 550 = 63.8 orders, and among the 250 households aged 50–64 we would expect 250 × 117 / 550 = 53.2. In general, the expected count of any cell of the table is
+
+$$
+E = \frac{\text{row total} \times \text{column total}}{\text{grand total}}
+$$
+
+**Step two: measure how far reality is from this imagined table.** For every cell we take the difference between the observed count $O$ and the expected count $E$, square it, and divide it by the expected count. Then we add up the results over all cells:
+
+$$
+\chi^2 = \sum_{\text{cells}} \frac{(O - E)^2}{E}
+$$
+
+Squaring makes sure that differences in opposite directions don't cancel each other. Dividing by $E$ puts the difference into proportion: being off by 3 orders matters more when we expected 5 than when we expected 500.
+
+For our table (the details are in Note 3):
+
+$$
+\chi^2 = \frac{(61 - 63.8)^2}{63.8} + \frac{(239 - 236.2)^2}{236.2} + \frac{(56 - 53.2)^2}{53.2} + \frac{(194 - 196.8)^2}{196.8} = 0.35
+$$
+
+::: {.column-margin .side-calc}
+
+---
+
+Note 3.
+
+#### The chi-square calculation, cell by cell
+
+| Cell | Observed | Expected | (O − E)² / E |
+|------|----------|----------|--------------|
+| 35–49, ordered | 61 | 300 × 117 / 550 = 63.82 | 0.125 |
+| 35–49, did not order | 239 | 300 × 433 / 550 = 236.18 | 0.034 |
+| 50–64, ordered | 56 | 250 × 117 / 550 = 53.18 | 0.149 |
+| 50–64, did not order | 194 | 250 × 433 / 550 = 196.82 | 0.040 |
+| **Sum** | | | **0.348** |
+
+In all four cells the difference between observed and expected is the same 2.82 households, only the sign changes. This is always so in a table with two rows and two columns, and it is the reason why such a table has only one "degree of freedom": once one cell is known, the totals fix the other three.
+
+In general, a table with $r$ rows and $c$ columns has $(r - 1) \times (c - 1)$ degrees of freedom. The more cells a table has, the larger its chi-square tends to be by chance alone, and the degrees of freedom take this into account when the p-value is calculated.
+
+---
+
+:::
+
+**Step three: translate the number into a probability.** If age truly made no difference, how often would chance alone give us a table at least this far from the expected one? This probability is called the *p-value*. For a chi-square of 0.35 in a table with two rows and two columns it is 0.56. In other words, a difference of this size or larger would appear more than half of the time between two groups that are in truth identical. Nobody should build anything on it.
+
+Compare this with the two oldest groups: 56 orders from 250 households aged 50–64 (22.4%) against 71 orders from 200 households aged 65 or older (35.5%). The same three steps give $\chi^2 = 9.41$ and a p-value of 0.002. Chance alone would produce such a gap only about twice in a thousand tries. This difference is worth believing.
+
+```{python}
+#| code-fold: true
+#| code-summary: "Show the code"
+from scipy.stats import chi2_contingency
+
+def compare(group_a, group_b):
+    two_groups = df[df["age"].isin([group_a, group_b])]
+    observed = pd.crosstab(two_groups["age"], two_groups["ordered"])
+    # correction=False gives the plain Pearson chi-square that Kass used
+    chi2, p, dof, expected = chi2_contingency(observed, correction=False)
+    print(f"{group_a} vs {group_b}: chi-square = {chi2:.2f}, "
+          f"degrees of freedom = {dof}, p = {p:.4f}")
+
+compare("35-49", "50-64")
+compare("50-64", "65+")
+```
+
+::: {.callout-note}
+## A rule of thumb
+By convention, a difference is called *statistically significant* when its p-value is below 0.05, so when chance alone would produce it less than once in twenty tries. For a table with two rows and two columns this happens when the chi-square is larger than 3.84. CHAID uses this 0.05 threshold twice: once for deciding whether two categories are different, and once for deciding whether a split is worth making.
+:::
+
+That is all the statistics CHAID needs. The rest of the algorithm is a disciplined way of applying this one test over and over again.
+
+## CHAID step by step
+
+We start at the top of the tree with all 1,000 households, and we have three predictors to choose from. CHAID examines each of them in the same way.
+
+### Step 1: Merge the categories that behave alike
+
+Let's begin with age. Here is how the four age groups responded.
+
+| Age of household head | Households | Ordered | Response rate |
+|-----------------------|------------|---------|---------------|
+| <35                   | 250        | 26      | 10.4%         |
+| 35–49                 | 300        | 61      | 20.3%         |
+| 50–64                 | 250        | 56      | 22.4%         |
+| 65+                   | 200        | 71      | 35.5%         |
+| All                   | 1,000      | 214     | 21.4%         |
+
+AID would now look for the best place to cut this list into *two* parts. CHAID does something different. It asks whether all four groups really need to stay separate, and it merges those that cannot be told apart.
+
+The rule is this: compare the categories pair by pair with the chi-square test, find the pair that is the *least* different (the one with the largest p-value), and if that pair is not significantly different, merge it. Then start again with the new, shorter list of categories.
+
+Age groups have a natural order, so only neighbours are allowed to merge. It would make little sense to put the under-35s and the over-65s into one group while leaving the middle-aged out. This gives us three pairs to test.
+
+| Pair of neighbours | $\chi^2$ | p-value | Verdict |
+|--------------------|----------|---------|---------|
+| <35 and 35–49      | 10.10    | 0.0015  | different |
+| 35–49 and 50–64    | 0.35     | 0.56    | **not different** |
+| 50–64 and 65+      | 9.41     | 0.0022  | different |
+
+The middle pair is the one we calculated by hand above. Its p-value of 0.56 is far above 0.05, so the two categories are merged into a single group, 35–64, with 550 households and 117 orders (21.3%).
+
+Now we repeat the comparison with the three groups that are left.
+
+| Pair of neighbours | $\chi^2$ | p-value | Verdict |
+|--------------------|----------|---------|---------|
+| <35 and 35–64      | 13.84    | 0.0002  | different |
+| 35–64 and 65+      | 15.81    | 0.0001  | different |
+
+Both pairs are clearly different, so the merging stops. The data have told us that, as far as ordering books is concerned, there are three age groups and not four: **under 35, 35–64, and 65 or older**.
+
+::: {.callout-note}
+## Three kinds of predictors
+Kass distinguished three types of predictors, and the type decides which categories are allowed to merge.
+
+- **Monotonic** predictors have ordered categories, like our age groups. Only neighbours can merge.
+- **Free** predictors have categories without any order, like region. Any two categories can merge.
+- **Floating** predictors are ordered, except for one category that stands outside the order. The typical case is "age unknown". This odd category is allowed to merge with any group. It was Kass's answer to the missing values that fill every real survey: instead of throwing those households away, let the data show which group they resemble.
+:::
+
+### Step 2: Put a price on the search
+
+After the merging we have a table with three rows (the three age groups) and two columns (ordered or not). We can test this whole table with the chi-square test, in the same way as before: calculate the expected counts, add up the differences. The result is $\chi^2 = 41.63$, and the p-value is about $9 \times 10^{-10}$, less than one in a billion.
+
+But is this p-value honest? Not entirely. A p-value answers the question "how likely is it that chance alone produces this?" under the assumption that we tested one table that we chose in advance. We did not do that. We let the algorithm search for a good-looking grouping, and a search always flatters its own result. This was the very problem Kass had studied in 1975.
+
+A small thought experiment shows the point. If you roll a single die, a six is a one-in-six event. If you roll three dice and report only the best one, a six is not surprising any more. And nobody would be impressed by your six if you had quietly rolled two thousand dice.
+
+Kass's remedy is as simple as it is strict: count how many different groupings the search could have produced, and multiply the p-value by this number. Statisticians call this a Bonferroni adjustment, after the Italian mathematician Carlo Emilio Bonferroni, and the number we multiply by is the *Bonferroni multiplier*.
+
+$$
+p_{\text{adjusted}} = B \times p
+$$
+
+How many ways are there to merge our four ordered age groups into three? We have to choose the one pair of neighbours that is merged, and there are three such pairs. So $B = 3$, and the adjusted p-value of age is $3 \times 9 \times 10^{-10} \approx 3 \times 10^{-9}$. Still vanishingly small. For age, the price of the search is easy to pay. We will soon meet a predictor for which it is not.
+
+::: {.column-margin .side-calc}
+
+---
+
+Note 4.
+
+#### The Bonferroni multipliers
+
+The multiplier $B$ is the number of ways in which $c$ original categories can be merged into $r$ final groups. It depends on the type of the predictor.
+
+**Monotonic** (ordered) predictor: we choose where to put the $r - 1$ borders among the $c - 1$ gaps between neighbours.
+
+$$
+B = \binom{c - 1}{r - 1}
+$$
+
+**Free** (unordered) predictor: any category can go with any other, so there are many more ways.
+
+$$
+B = \sum_{i=0}^{r-1} (-1)^i \, \frac{(r - i)^c}{i! \, (r - i)!}
+$$
+
+**Floating** predictor: an ordered predictor with one category that can join any group.
+
+$$
+B = \binom{c - 2}{r - 2} + r \binom{c - 2}{r - 1}
+$$
+
+A few values, to get a feeling for them:
+
+| Predictor | Type | $c \to r$ | $B$ |
+|-----------|------|-----------|-----|
+| Age | monotonic | 4 → 3 | 3 |
+| Age | monotonic | 4 → 2 | 3 |
+| Region | free | 3 → 2 | 3 |
+| High school | either | 2 → 2 | 1 |
+| Sign of the zodiac | free | 12 → 2 | 2,047 |
+| Sign of the zodiac | free | 12 → 3 | 86,526 |
+
+The last two rows show the purpose of the whole exercise. If the book club had recorded the zodiac sign of every household head, an AID-style search would very likely find some way of sorting the twelve signs into two groups with a "significant" difference in response. In CHAID the p-value of that grouping is multiplied by 2,047 before it is allowed to compete, and the stars lose their influence.
+
+**A shortcut for the curious.** For a table with two degrees of freedom, like our 3 × 2 age table, the p-value has a simple formula: $p = e^{-\chi^2 / 2}$. With $\chi^2 = 41.63$ this gives $e^{-20.8} \approx 9 \times 10^{-10}$.
+
+---
+
+:::
+
+### Step 3: Choose the most significant predictor, or stop
+
+We repeat steps 1 and 2 for the other two predictors.
+
+**Region** has three categories without a natural order, so any two of them may merge. The response rates are 17.7% in cities, 22.1% in towns and 25.7% in villages. Town and village are the least different pair (p = 0.29), so they are merged. What remains is city against town-or-village, with $\chi^2 = 5.20$ and a p-value of 0.023. There are three ways to merge three unordered categories into two groups (any one of the three can be the one left alone), so $B = 3$ and the adjusted p-value is $3 \times 0.023 = 0.068$.
+
+**High school** has only two categories, so there is nothing to merge and nothing to pay for: $B = 1$. Households whose head finished high school ordered at a rate of 23.9%, the others at 19.0%. The test gives $\chi^2 = 3.51$ and a p-value of 0.061.
+
+Now all three predictors stand side by side.
+
+| Predictor | Groups after merging | $\chi^2$ | p-value | $B$ | Adjusted p-value |
+|-----------|----------------------|----------|---------|-----|------------------|
+| Age | <35 / 35–64 / 65+ | 41.63 | 0.0000000009 | 3 | **0.000000003** |
+| High school | yes / no | 3.51 | 0.061 | 1 | 0.061 |
+| Region | city / town or village | 5.20 | 0.023 | 3 | 0.068 |
+
+The rule for choosing is short: **split on the predictor with the smallest adjusted p-value, provided it is below 0.05. If no predictor gets below 0.05, do not split at all.**
+
+Age wins by a huge margin, so the 1,000 households are divided into three groups: 250 households under 35, 550 households between 35 and 64, and 200 households of 65 or older. This is the first thing that AID could never have produced: a three-way split, with the number of branches chosen by the data.
+
+Two details in the table deserve a second look, because both will matter in a moment.
+
+First, high school is *not* a significant predictor of ordering in the whole sample. If we stopped here, we would conclude that education has little to do with buying books by mail.
+
+Second, region shows the Bonferroni adjustment at work. Its raw p-value of 0.023 is below 0.05, and without the adjustment we would call it significant. After paying the price of the search, it is not.
+
+### Step 4: Repeat inside every new group
+
+Each of the three age groups is now treated as if it were a new, smaller dataset, and the whole procedure starts again. Age itself is used up in the youngest and the oldest group, where only one age category is left. In the middle group the categories 35–49 and 50–64 are both present, so age gets another chance there.
+
+**Households under 35 (250 households, 10.4% ordered).** Education makes no difference here: 10.0% with high school, 11.0% without (p = 0.80). Region is another matter.
+
+| Region  | Households | Ordered | Response rate |
+|---------|------------|---------|---------------|
+| City    | 110        | 6       | 5.5%          |
+| Town    | 80         | 7       | 8.8%          |
+| Village | 60         | 13      | 21.7%         |
+
+City and town are the least different pair (p = 0.37), so they are merged. The merged group against village gives $\chi^2 = 10.75$, a p-value of 0.0010, and after multiplying by $B = 3$ an adjusted p-value of 0.003. This is well below 0.05, so the young households are split by region into **city or town** (190 households, 6.8%) and **village** (60 households, 21.7%). Perhaps the young villagers order books by mail because there is no bookshop nearby. The data cannot tell us why, only that it is so.
+
+**Households between 35 and 64 (550 households, 21.3% ordered).** The two age categories inside this group are of course still not different (p = 0.56). Region does nothing either: 21.9%, 21.1% and 20.6% in cities, towns and villages, and all three categories collapse into one. But look at education.
+
+| Finished high school | Households | Ordered | Response rate |
+|----------------------|------------|---------|---------------|
+| Yes                  | 270        | 77      | 28.5%         |
+| No                   | 280        | 40      | 14.3%         |
+
+The response rate doubles with a high school diploma. The test gives $\chi^2 = 16.63$ and a p-value of 0.00005, with nothing to adjust. The middle-aged households are split by **high school**.
+
+::: {.highlight-box}
+
+Here is the "interaction detection" that gives the method the last three letters of its name. In the whole sample, high school was not a significant predictor. Among the middle-aged households it is the strongest one by far, while among the young and the old it does nothing. The effect of education *depends on* age, which is exactly what we called an interaction in Part 1. And we did not have to suspect it in advance or write it into a model. The tree found it on its own.
+
+Why was the effect hidden at the top? Because the oldest households order the most books and have the fewest diplomas, while the youngest order the fewest and have the most. In the whole sample this pulls the two education groups towards each other and masks the difference.
+
+:::
+
+**Households of 65 or older (200 households, 35.5% ordered).** Education does nothing: 35.7% with high school, 35.4% without (p = 0.96). Region looks more promising.
+
+| Region  | Households | Ordered | Response rate |
+|---------|------------|---------|---------------|
+| City    | 65         | 16      | 24.6%         |
+| Town    | 70         | 28      | 40.0%         |
+| Village | 65         | 27      | 41.5%         |
+
+Town and village are almost identical (p = 0.86) and are merged. City against town-or-village gives 24.6% against 40.7%, with $\chi^2 = 4.98$ and a p-value of 0.026.
+
+This is the moment the whole article has been leading to. A difference of sixteen percentage points and a p-value of 0.026: a search in the style of AID or THAID would split here without hesitation, and most of us would be tempted too. But CHAID remembers that it searched through three possible groupings to find this one. The adjusted p-value is $3 \times 0.026 = 0.077$, which is above 0.05.
+
+So CHAID declines. The 200 oldest households stay together as one group, and this branch of the tree ends here.
+
+::: {.key-point}
+
+A CHAID tree stops growing not when it runs out of data, but when it runs out of evidence.
+
+:::
+
+**The second level.** The procedure is repeated once more inside the four newest groups: young households in cities and towns, young households in villages, middle-aged households with and without high school. None of the remaining predictors comes anywhere near significance in any of them (the smallest p-value is 0.37), so the tree is finished.
+
+::: {.callout-note}
+## One step we skipped
+Kass's original algorithm contains one more check. Whenever a merged group consists of three or more original categories, the algorithm looks whether it should be cut in two again, because merging one pair at a time can sometimes glue together categories that do not belong together. In our small example no group of this kind was created. In today's software this re-splitting step is usually an option that is switched off by default.
+:::
+
+### The finished tree
+
+```{mermaid}
+flowchart TD
+    A["<b>All households</b><br/>n = 1,000<br/>21.4% ordered"]
+    A -->|"under 35"| B["n = 250<br/>10.4% ordered"]
+    A -->|"35–64"| C["n = 550<br/>21.3% ordered"]
+    A -->|"65 or older"| D["n = 200<br/><b>35.5% ordered</b>"]
+    B -->|"city or town"| E["n = 190<br/><b>6.8% ordered</b>"]
+    B -->|"village"| F["n = 60<br/><b>21.7% ordered</b>"]
+    C -->|"high school"| G["n = 270<br/><b>28.5% ordered</b>"]
+    C -->|"no high school"| H["n = 280<br/><b>14.3% ordered</b>"]
+```
+
+The tree was split by age at the top (adjusted p < 0.001), then by region among the young (adjusted p = 0.003) and by high school among the middle-aged (p < 0.001). It ends in five final groups, and they are the answer to the book club's question. Let's list them from the best to the worst.
+
+| Segment | Households | Orders | Response rate | Cumulative households | Cumulative orders |
+|:-----------------------|------------|--------|---------------|-----------------------|-------------------|
+| 65 or older | 200 | 71 | 35.5% | 20% | 33% |
+| 35–64, high school | 270 | 77 | 28.5% | 47% | 69% |
+| Under 35, village | 60 | 13 | 21.7% | 53% | 75% |
+| 35–64, no high school | 280 | 40 | 14.3% | 81% | 94% |
+| Under 35, city or town | 190 | 13 | 6.8% | 100% | 100% |
+
+If the club sends its next catalogue only to the first three segments, it mails 530 households instead of 1,000 and still reaches 161 of the 214 buyers. The two cumulative columns say the same in percentages: 75% of the orders for 53% of the postage. A table like this, read from the top down, is the reason why direct marketers fell in love with the method.
+
+It is also worth noticing how readable the result is. Every segment is described by one or two plain conditions that a marketing manager can understand without any training in statistics, and each split in the tree comes with a p-value that says how much it can be trusted.
+
+Below is the whole algorithm in about fifty lines of Python. It repeats exactly what we did by hand, and it prints the same tree.
+
+```{python}
+#| code-fold: true
+#| code-summary: "Show the code"
+from itertools import combinations
+from math import comb, factorial
+
+ORDER = {"age": ["<35", "35-49", "50-64", "65+"]}   # ordered (monotonic) predictors
+ALPHA_MERGE = ALPHA_SPLIT = 0.05
+
+
+def p_value(data, var, groups):
+    """Chi-square p-value of the table: groups of `var` by ordered (Yes/No)."""
+    label = data[var].map({cat: i for i, group in enumerate(groups) for cat in group})
+    table = pd.crosstab(label, data["ordered"])
+    return chi2_contingency(table, correction=False)[1]
+
+
+def multiplier(var, c, r):
+    """Kass's Bonferroni multiplier: ways to merge c categories into r groups."""
+    if var in ORDER:                                  # monotonic predictor
+        return comb(c - 1, r - 1)
+    return round(sum((-1) ** i * (r - i) ** c / (factorial(i) * factorial(r - i))
+                     for i in range(r)))              # free predictor
+
+
+def merge_categories(data, var):
+    """Step 1 and 2: merge similar categories, return the groups and the adjusted p."""
+    categories = [cat for cat in ORDER.get(var, sorted(data[var].unique()))
+                  if (data[var] == cat).any()]
+    groups = [[cat] for cat in categories]
+    while len(groups) > 1:
+        if var in ORDER:                              # only neighbours may merge
+            pairs = [(i, i + 1) for i in range(len(groups) - 1)]
+        else:                                         # any two groups may merge
+            pairs = list(combinations(range(len(groups)), 2))
+        # the pair of groups that is the least different
+        p, i, j = max(
+            (p_value(data[data[var].isin(groups[i] + groups[j])], var, [groups[i], groups[j]]), i, j)
+            for i, j in pairs
+        )
+        if p <= ALPHA_MERGE:                          # all pairs are different: stop merging
+            break
+        groups[i] = groups[i] + groups.pop(j)
+    if len(groups) < 2:                               # everything merged: predictor is useless here
+        return groups, 1.0
+    p_adjusted = p_value(data, var, groups) * multiplier(var, len(categories), len(groups))
+    return groups, min(1.0, p_adjusted)
+
+
+def grow(data, label="All households", depth=0):
+    """Step 3 and 4: split on the most significant predictor, then repeat in each group."""
+    indent = "    " * depth
+    rate = (data["ordered"] == "Yes").mean()
+    print(f"{indent}{label}: n = {len(data)}, ordered = {rate:.1%}")
+    candidates = {var: merge_categories(data, var)
+                  for var in ["age", "hs", "region"] if data[var].nunique() > 1}
+    if not candidates:
+        return
+    best = min(candidates, key=lambda var: candidates[var][1])
+    groups, p_adjusted = candidates[best]
+    if p_adjusted >= ALPHA_SPLIT:                     # no significant predictor: stop
+        return
+    print(f"{indent}  -> split on {best} (adjusted p = {p_adjusted:.2g})")
+    for group in groups:
+        grow(data[data[best].isin(group)], f"{best}: {' or '.join(group)}", depth + 1)
+
+
+grow(df)
+```
+
+## From a thesis to the marketing department
+
+Kass's paper did not make headlines in 1980. Its fame came later, and it came mostly from outside the universities.
+
+The 1980s were the decade when companies started to build large customer databases, and when the personal computer arrived on the analyst's desk. Direct marketers had exactly the kind of problem we just solved: a categorical outcome (responded or not), a handful of categorical customer characteristics, tens of thousands of records, and a manager who wanted an answer on one page. CHAID fitted this problem like a glove.
+
+The person who did the most to bring the method to this audience was the American statistician Jay Magidson, who founded the company Statistical Innovations in 1981. He wrote the CHAID program that was sold as part of the SPSS statistical package, and he explained the method to market researchers in a series of writings. The sample data that came with that program were, fittingly, of the same kind as ours, only larger: the response of 81,040 households to a mailing, with a response rate just above one percent. In the late 1990s the program was replaced by a product called AnswerTree, and CHAID still lives on today in the decision tree modules of IBM SPSS and in several other commercial packages.
+
+Marketing was the largest field of application, but not the only one: from the early 1980s the method also appeared in medical research. Gordon Kass himself stayed connected to the University of the Witwatersrand for decades.
+
+## What was improved later
+
+The algorithm of 1980 was not the last word. Later work fixed some of its weaknesses, widened its reach, and in the end carried its central idea into a new generation of trees.
+
+### Exhaustive CHAID (1991)
+
+In 1991 David Biggs, Barry de Ville and Ed Suen took a critical look at Kass's merging step and found two problems.
+
+The first is that the merging stops too early. Kass stops as soon as all the remaining pairs of categories are significantly different. But the grouping reached at that moment is not necessarily the one with the strongest relationship to the dependent variable. A grouping with fewer categories might do better.
+
+The second is that Kass's Bonferroni multiplier is not quite fair. It favours simple splits with few branches, and it punishes unordered predictors with many categories harder than they deserve. Remember the multiplier of 2,047 for the twelve zodiac signs. It protects us from a meaningless predictor, but it would also crush a meaningful predictor with twelve categories, such as the occupation of the household head.
+
+Their solution was to keep merging all the way down, until only two groups are left, and to write down the grouping and its p-value at every stage on the way. In our age example this would give a list of three candidates: four groups, three groups and two groups. From this list the algorithm picks the grouping with the best adjusted p-value. They also proposed a different multiplier. It depends only on the number of original categories, not on the number of groups that remain, and it is far gentler with unordered predictors that have many categories: for twelve categories it is 286 instead of 2,047.
+
+The method is more thorough and needs more computing time, and it became known as *Exhaustive CHAID*. The packages that offer CHAID today usually offer both versions.
+
+### New kinds of dependent variables and predictors
+
+Kass's CHAID needed a categorical dependent variable and categorical predictors. Both restrictions were loosened.
+
+- **A numeric dependent variable.** If the dependent variable is a number, such as the amount of money a household spent, the chi-square test is replaced by the F-test, which compares group averages. Everything else, the merging, the multipliers, the stopping rule, stays the same. With this the method returned to the home ground of AID, now equipped with significance tests.
+- **An ordinal dependent variable.** If the categories of the dependent variable have an order, such as "light, medium, heavy buyer", the plain chi-square test wastes this information. For this case the SPSS program used a test, developed by Magidson, that takes the order into account.
+- **Numeric predictors.** A predictor like age in years or income in dollars is first cut into bands, typically ten bands with about the same number of cases, and is then treated as an ordered predictor whose neighbouring bands may merge.
+
+The last item is also one of CHAID's lasting weaknesses. The borders of the bands are fixed before the algorithm starts, so a split can only fall on one of them, and the best possible cut point may lie somewhere in between. When the statistician Wei-Yin Loh compared the major tree algorithms on a classic benchmark dataset in his history of the field, he found the split points chosen by CHAID rather poor.
+
+### The idea that outlived the algorithm
+
+The most important upgrade of CHAID is not a new version of CHAID at all. It is the survival of its central idea in other algorithms.
+
+That idea has two parts. First, *choose the variable to split on with a significance test, so that every variable gets a fair chance regardless of how many categories it has*. Second, *stop when nothing is significant any more*.
+
+From the late 1990s Wei-Yin Loh and his co-authors built a whole family of trees around the first part: QUEST (1997), CRUISE (2001) and GUIDE (2002). These methods separate two questions that AID and its followers had answered in one step. *Which variable* should be used is decided by significance tests, and only then is the *place* of the split searched for, within the chosen variable alone. A variable with many possible cut points therefore gets no head start.
+
+In 2006 Torsten Hothorn, Kurt Hornik and Achim Zeileis published the *conditional inference tree*, known to R users as `ctree`. It selects the split variable with a statistical test that works for any type of variable, it adjusts the p-values for the number of tests, and it stops growing when no adjusted p-value is small enough. Anyone who has followed our book club example will recognise the logic. It is Kass's programme of 1975, carried out with the statistical tools of thirty years later.
+
+### CHAID today
+
+Classic CHAID is still used wherever the result has to be explained to non-statisticians: in market segmentation, in customer surveys, in social research. Outside the commercial packages it is available as free software too.
+
+- In **R**, the `CHAID` package is distributed through R-Forge. It was written by statistics students in Munich as a course project, on top of the same toolkit that powers `ctree`.
+- In **Python**, the `CHAID` package (`pip install CHAID`) implements both the classic and the exhaustive version. The popular scikit-learn library does not contain CHAID, as its trees follow a different tradition, which will be the subject of the coming articles.
+- In **Stata**, a user-written `chaid` module exists, and its author even built a random forest out of CHAID trees.
+
+## What CHAID left open
+
+CHAID gave the tree a statistical conscience, but the conscience has its limits.
+
+**It still needs a lot of data.** A three-way split followed by another three-way split already produces nine groups. The chi-square test becomes unreliable when the expected counts get small, so a CHAID tree runs out of households quickly. This is why the method has always been at home in large surveys and customer databases.
+
+**The Bonferroni adjustment is a rough tool.** It tends to be too strict, and a tree that is too careful can miss real structure. Was the difference between city and countryside among our oldest households real or not? With 200 households, CHAID cannot know, and it prefers the error of saying nothing to the error of saying something false.
+
+**It decides one step ahead.** CHAID stops when no single predictor is significant *right now*. But some structures only appear after a split that looks useless on its own. We saw a mild version of this in our own example: high school looked unimportant in the whole sample and became the strongest predictor one level down. Had age not been there to open the door, the tree would never have found it.
+
+This last weakness belongs to every method that decides in advance when to stop. A few years after Kass's paper, four American statisticians proposed a radically different answer to the question of how large a tree should be: do not stop early at all. Grow the tree far too large, and then cut it back. That idea, and the book in which it appeared in 1984, is where this series is heading next.
+
+## References
+
+- Belson, W. A. (1959). Matching and prediction on the principle of biological classification. *Applied Statistics*, 8(2), 65–75.
+- Biggs, D., de Ville, B. and Suen, E. (1991). A method of choosing multiway partitions for classification and decision trees. *Journal of Applied Statistics*, 18(1), 49–62.
+- Doyle, P. (1973). The use of Automatic Interaction Detector and similar search procedures. *Operational Research Quarterly*, 24(3).
+- Doyle, P. and Fenwick, I. (1975). The pitfalls of AID analysis. *Journal of Marketing Research*, 12(4), 408–413.
+- Einhorn, H. J. (1972). Alchemy in the behavioral sciences. *Public Opinion Quarterly*, 36(3), 367–378.
+- Hawkins, D. M. and Kass, G. V. (1982). Automatic Interaction Detection. In D. M. Hawkins (ed.), *Topics in Applied Multivariate Analysis*. Cambridge University Press, 269–302.
+- Hothorn, T., Hornik, K. and Zeileis, A. (2006). Unbiased recursive partitioning: a conditional inference framework. *Journal of Computational and Graphical Statistics*, 15(3), 651–674.
+- Kass, G. V. (1975). Significance testing in Automatic Interaction Detection (A.I.D.). *Applied Statistics*, 24(2), 178–189.
+- Kass, G. V. (1980). An exploratory technique for investigating large quantities of categorical data. *Applied Statistics*, 29(2), 119–127.
+- Kim, H. and Loh, W.-Y. (2001). Classification trees with unbiased multiway splits. *Journal of the American Statistical Association*, 96, 589–604.
+- Loh, W.-Y. (2002). Regression trees with unbiased variable selection and interaction detection. *Statistica Sinica*, 12, 361–386.
+- Loh, W.-Y. (2014). Fifty years of classification and regression trees. *International Statistical Review*, 82(3), 329–348.
+- Loh, W.-Y. and Shih, Y.-S. (1997). Split selection methods for classification trees. *Statistica Sinica*, 7, 815–840.
+- Magidson, J. (1994). The CHAID approach to segmentation modeling: chi-squared automatic interaction detection. In R. P. Bagozzi (ed.), *Advanced Methods of Marketing Research*. Blackwell, 118–159.
+- Messenger, R. and Mandell, L. (1972). A modal search technique for predictive nominal scale multivariate analysis. *Journal of the American Statistical Association*, 67(340), 768–772.
+- Morgan, J. N. and Andrews, F. M. (1973). A comment on Einhorn's "Alchemy in the behavioral sciences". *Public Opinion Quarterly*, 37(1), 127–129.
+- Morgan, J. N. and Sonquist, J. A. (1963). Problems in the analysis of survey data, and a proposal. *Journal of the American Statistical Association*, 58(302), 415–434.
+- Ritschard, G. (2013). CHAID and earlier supervised tree methods. In J. J. McArdle and G. Ritschard (eds.), *Contemporary Issues in Exploratory Data Mining in the Behavioral Sciences*. Routledge, 48–74.
+- Scott, A. J. and Knott, M. (1976). An approximate test for use with AID. *Applied Statistics*, 25(2), 103–106.
+- Sonquist, J. A., Baker, E. L. and Morgan, J. N. (1973). *Searching for Structure*. Institute for Social Research, University of Michigan.
