@@ -2,34 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://gabortamas.github.io/articles.html</loc>
-    <lastmod>2026-11-07T22:00:21.458Z</lastmod>
+    <lastmod>2026-11-10T20:03:28.436Z</lastmod>
   </url>
   <url>
     <loc>https://gabortamas.github.io/articles/decision-trees/index.html</loc>
-    <lastmod>2026-11-07T22:00:21.458Z</lastmod>
-  </url>
-  <url>
-    <loc>https://gabortamas.github.io/articles/decision-trees/01-origins/index.html</loc>
-    <lastmod>2026-11-07T22:00:21.458Z</lastmod>
-  </url>
-  <url>
-    <loc>https://gabortamas.github.io/articles/gen-ai-and-agentic-workflow/index.html</loc>
-    <lastmod>2026-11-07T22:00:21.458Z</lastmod>
-  </url>
-  <url>
-    <loc>https://gabortamas.github.io/index.html</loc>
-    <lastmod>2026-11-07T22:00:21.481Z</lastmod>
-  </url>
-  <url>
-    <loc>https://gabortamas.github.io/articles/causal-inference/index.html</loc>
-    <lastmod>2026-11-07T22:00:21.458Z</lastmod>
+    <lastmod>2026-11-10T20:03:28.437Z</lastmod>
   </url>
   <url>
     <loc>https://gabortamas.github.io/articles/decision-trees/02-c4.5/index.html</loc>
-    <lastmod>2026-11-07T22:00:21.458Z</lastmod>
+    <lastmod>2026-11-10T20:03:28.437Z</lastmod>
+  </url>
+  <url>
+    <loc>https://gabortamas.github.io/articles/causal-inference/index.html</loc>
+    <lastmod>2026-11-10T20:03:28.437Z</lastmod>
+  </url>
+  <url>
+    <loc>https://gabortamas.github.io/index.html</loc>
+    <lastmod>2026-11-10T20:03:28.457Z</lastmod>
+  </url>
+  <url>
+    <loc>https://gabortamas.github.io/articles/gen-ai-and-agentic-workflow/index.html</loc>
+    <lastmod>2026-11-10T20:03:28.437Z</lastmod>
+  </url>
+  <url>
+    <loc>https://gabortamas.github.io/articles/decision-trees/01-origins/index.html</loc>
+    <lastmod>2026-11-10T20:03:28.437Z</lastmod>
+  </url>
+  <url>
+    <loc>https://gabortamas.github.io/articles/decision-trees/02-chaid/index.html</loc>
+    <lastmod>2026-11-10T20:03:28.437Z</lastmod>
   </url>
   <url>
     <loc>https://gabortamas.github.io/about.html</loc>
-    <lastmod>2026-11-07T22:00:21.458Z</lastmod>
+    <lastmod>2026-11-10T20:03:28.436Z</lastmod>
   </url>
 </urlset>
